@@ -1,9 +1,13 @@
-!pip install japanize-matplotlib -q
+# ノートブック上で使う pip のセル記法は通常の Python スクリプトでは使えないため、
+# ここでは依存関係の有無を確認してから読み込みます。
+try:
+    import japanize_matplotlib
+except ModuleNotFoundError:
+    print("japanize-matplotlib が未インストールのため、日本語表示は無効です。")
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import japanize_matplotlib
 
 # ------------------------------
 # 1. データ生成
@@ -160,7 +164,7 @@ for team in teams:
 
 team_stats_df = pd.DataFrame(team_stats).sort_values("win_pct", ascending=False).reset_index(drop=True)
 print("\n=== チーム成績(勝率順) ===")
-display(team_stats_df)
+print(team_stats_df.to_string(index=False))
 
 # --- 個人打撃成績(打率) ---
 batting_summary = batting_df.groupby(["player_id", "name", "team"]).agg(
@@ -179,7 +183,7 @@ top_batters = batting_summary[batting_summary["total_at_bats"] >= 50].sort_value
 ).head(10)
 
 print("\n=== 打率ランキング TOP10(規定打席以上) ===")
-display(top_batters)
+print(top_batters.to_string(index=False))
 
 # --- 個人投手成績(防御率) ---
 pitching_summary = pitching_df.groupby(["player_id", "name", "team"]).agg(
@@ -198,7 +202,7 @@ top_pitchers = pitching_summary[pitching_summary["total_innings"] >= 30].sort_va
 ).head(10)
 
 print("\n=== 防御率ランキング TOP10(規定投球回以上) ===")
-display(top_pitchers)
+print(top_pitchers.to_string(index=False))
 
 # --- リーグ全体サマリー ---
 league_summary = {
